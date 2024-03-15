@@ -22,11 +22,11 @@ Este curso presenta modelos estadísticos avanzados para el análisis de datos, 
 
 - Capítulo 1: [Herramientas estadísticas avanzadas](https://anlopezl.github.io/files/AAD/SL_1.pdf)
 - Capítulo 2: [Evaluación de modelos y bootstrap](https://anlopezl.github.io/files/AAD/SL_2.pdf)
-- Capítulo 3: [Métodos de suavización. Splines](https://anlopezl.github.io/clases/AAD/SL_3.pdf)
-<!-- - Capítulo 4: [Métodos de Kernel](https://anlopezl.github.io/clases/AAD/SL_4.pdf) -->
-<!-- - Capítulo 5: [Modelos generalizados. Regresión logística](https://anlopezl.github.io/clases/AAD/SL_5.pdf) -->
-<!-- - Capítulo 6: [Variables latentes y datos estructurados](https://anlopezl.github.io/clases/AAD/SL_6.pdf) -->
-<!-- - Capítulo 7: [Variables latentes y datos no estructurados](https://anlopezl.github.io/clases/AAD/SL_7.pdf) -->
+- Capítulo 3: [Métodos de suavización. Splines](https://anlopezl.github.io/files/AAD/SL_3.pdf)
+<!-- - Capítulo 4: [Métodos de Kernel](https://anlopezl.github.io/files/AAD/SL_4.pdf) -->
+<!-- - Capítulo 5: [Modelos generalizados. Regresión logística](https://anlopezl.github.io/files/AAD/SL_5.pdf) -->
+<!-- - Capítulo 6: [Variables latentes y datos estructurados](https://anlopezl.github.io/files/AAD/SL_6.pdf) -->
+<!-- - Capítulo 7: [Variables latentes y datos no estructurados](https://anlopezl.github.io/files/AAD/SL_7.pdf) -->
 
 **Talleres**
 
