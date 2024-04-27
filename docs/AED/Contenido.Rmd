@@ -28,9 +28,9 @@ El estudio de fenómenos reales requiere considerar múltiples variables y sus p
   - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB2_PRF.html)
 - Capítulo 3: Análisis de componentes principales.
   - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB3.html)
-<!-- - Capítulo 4: Clustering. -->
-<!--   - [Cuaderno estudiante](https://anlopezl.github.io/clases/AED/NB4_E.html) -->
-<!--   - [Cuaderno profesor](https://anlopezl.github.io/clases/AED/NB4_P.html) -->
+- Capítulo 4: Clustering.
+  - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB4_E.html)
+  - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB4_P.html)
 <!-- - Capítulo 5: Regresión lineal en múltiples variables. -->
 <!--   - [Cuaderno estudiante](https://anlopezl.github.io/clases/AED/NB5_E.html) -->
 <!--   - [Cuaderno profesor](https://anlopezl.github.io/clases/AED/NB5_P.html) -->
