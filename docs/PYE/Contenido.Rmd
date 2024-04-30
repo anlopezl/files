@@ -1,0 +1,33 @@
+---
+title: "Probabilidad y estadística"
+author: "Profesor: Nicolás López"
+output:
+  rmdformats::downcute
+---
+
+<br>
+
+**Resumen** 
+
+La asignatura de probabilidad y estadística es indispensable como herramienta para el planteamiento y solución de problemas, y como complemento de otras áreas del saber. Ofrece al estudiante la formación básica necesaria conceptual y práctica para la recolección,organización manejo de los datos e información, su análisis e interpretación, su modelamiento y su aplicación.
+<br>
+
+**Introducción**
+
+- [Laboratorios de programación](https://anlopezl.github.io/files/AED/Laboratorios.html)
+
+**Clases**
+
+- [Semana 1](https://anlopezl.github.io/files/PYE/Clases/PYE1_S1.pdf)
+- [Semana 2](https://anlopezl.github.io/files/PYE/Clases/PYE1_S2.pdf)
+- [Semana 3](https://anlopezl.github.io/files/PYE/Clases/PYE1_S3.pdf)
+- [Semana 4](https://anlopezl.github.io/files/PYE/Clases/PYE1_S4.pdf)
+- [Semana 5](https://anlopezl.github.io/files/PYE/Clases/PYE1_S5.pdf)
+- [Semana 6](https://anlopezl.github.io/files/PYE/Clases/PYE1_S6.pdf)
+- [Semana 7](https://anlopezl.github.io/files/PYE/Clases/PYE1_S7.pdf)
+- [Semana 8](https://anlopezl.github.io/files/PYE/Clases/PYE1_S8.pdf)
+- [Semana 9](https://anlopezl.github.io/files/PYE/Clases/PYE1_S9.pdf)
+- [Semana 10](https://anlopezl.github.io/files/PYE/Clases/PYE1_S10.pdf)
+- [Semana 11](https://anlopezl.github.io/files/PYE/Clases/PYE1_S11.pdf)
+- [Semana 12](https://anlopezl.github.io/files/PYE/Clases/PYE1_S12.pdf)
+- [Semana 13](https://anlopezl.github.io/files/PYE/Clases/PYE1_S13.pdf)
