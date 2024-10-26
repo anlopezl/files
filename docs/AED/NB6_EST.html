@@ -1995,26 +1995,27 @@ Mode &lt;- function(x) {
 data2 &lt;- data %&gt;% 
          dplyr::select(all_of(var)) %&gt;% 
          group_by(Municipio) %&gt;% 
-         summarise(Respuesta_Caracteristica = median(Velocidad_del_Viento),
-                   Pronostico_Frecuente = Mode(Pronostico)) %&gt;% 
+         summarise(VelocidadViento = median(Velocidad_del_Viento),
+                   PronosticoFrecuente = Mode(Pronostico)) %&gt;% 
          ungroup()  %&gt;% 
          remove_rownames %&gt;% 
          drop_na(any_of(&quot;Municipio&quot;)) %&gt;% 
          column_to_rownames(var=&quot;Municipio&quot;)
-dt2    &lt;- data2 %&gt;% filter(Pronostico_Frecuente%in%c(&#39;Nublado&#39;,&#39;Parcialmente Nublado&#39;))</code></pre>
+dt2    &lt;- data2 %&gt;% filter(PronosticoFrecuente%in%c(&#39;Nublado&#39;,&#39;Parcialmente Nublado&#39;))</code></pre>
 <div id="ejercicio-1" class="section level2">
 <h2>Ejercicio 1</h2>
-<p>Realice un gráfico de dispersión para la variable
-‘Respuesta_Caracteristica’, para cada grupo de pronóstico y añada el
-valor promedio de la variable (recuerde los gráficos vistos hoy en
-clase) ¿parece haber diferencia en la velocidad del viento para los
-pronósticos observados del clima?:</p>
+<p>Realice un gráfico de dispersión para la variable ‘VelocidadViento’,
+para cada grupo de pronóstico frecuente y añada el valor promedio de la
+variable (recuerde los gráficos vistos hoy en clase) ¿parece haber
+diferencia en la velocidad del viento para los pronósticos observados
+del clima?:</p>
 </div>
 <div id="ejercicio-2" class="section level2">
 <h2>Ejercicio 2</h2>
-<p>Ajuste un modelo de regresión lineal simple para explicar temperatura
-usando la variable pronóstico. ¿A qué es igual el R2 del modelo
-ajustado? ¿Cómo interpreta la pendiente y el intercepto del modelo?</p>
+<p>Ajuste un modelo de regresión lineal simple para explicar la
+velocidad del viento usando la variable de pronóstico frecuente. ¿A qué
+es igual el R2 del modelo ajustado? ¿Cómo interpreta la pendiente y el
+intercepto del modelo?</p>
 </div>
 <div id="ejercicio-3" class="section level2">
 <h2>Ejercicio 3</h2>
