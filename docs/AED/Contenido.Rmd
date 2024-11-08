@@ -15,7 +15,6 @@ El estudio de fenómenos reales requiere considerar múltiples variables y sus p
 
 **Introducción**
 
-- [Programa](https://anlopezl.github.io/files/AED/Programa.pdf)
 - [Laboratorios de programación](https://anlopezl.github.io/files/AED/Laboratorios.html)
 - [Canal de youtube](https://www.youtube.com/@SimpleEstad%C3%ADstica)
 

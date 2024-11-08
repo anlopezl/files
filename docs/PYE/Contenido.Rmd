@@ -15,6 +15,7 @@ La asignatura de probabilidad y estadística es indispensable como herramienta p
 **Introducción**
 
 - [Laboratorios de programación](https://anlopezl.github.io/files/AED/Laboratorios.html)
+- [Canal de youtube](https://www.youtube.com/@SimpleEstad%C3%ADstica)
 
 **Clases**
 
