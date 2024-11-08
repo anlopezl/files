@@ -31,3 +31,8 @@ La asignatura de probabilidad y estadística es indispensable como herramienta p
 - [Semana 11](https://anlopezl.github.io/files/PYE/Clases/PYE1_S11.pdf)
 - [Semana 12](https://anlopezl.github.io/files/PYE/Clases/PYE1_S12.pdf)
 - [Semana 13](https://anlopezl.github.io/files/PYE/Clases/PYE1_S13.pdf)
+- [Semana 14](https://anlopezl.github.io/files/PYE/Clases/PYE1_S14.pdf)
+- [Semana 15](https://anlopezl.github.io/files/PYE/Clases/PYE1_S15.pdf)
+- [Semana 16 (cuaderno estudiante)](https://anlopezl.github.io/files/PYE/Clases/PYE_S16_EST.html)
+- [Semana 16 (cuaderno profesor)](https://anlopezl.github.io/files/PYE/Clases/PYE_S16_PRF.html)
+
