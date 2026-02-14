@@ -21,22 +21,23 @@ El estudio de fenómenos reales requiere considerar múltiples variables y sus p
 **Clases**
 
 - Capítulo 1.1: Herramientas estadísticas básicas. Parte 1
+  - [Diapositivas de clase](https://anlopezl.github.io/files/AED/SL_1_1.pdf)
   - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB1_1_EST.html)
   - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB1_1_PRF.html)
-- Capítulo 1.2: Herramientas estadísticas básicas. Parte 2
-  - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB1_2_EST.html)
-  - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB1_2_PRF.html)
-- Capítulo 2: Introducción normal multivariada y visualización.
-  - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB2_EST.html)
-  - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB2_PRF.html)
-- Capítulo 3: Análisis de componentes principales.
-  - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB3.html)
-- Capítulo 4: Clustering.
-  - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB4_EST.html)
-  - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB4_PRF.html)
-- Capítulo 5: Regresión lineal en múltiples variables.
-  - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB5_EST.html)
-  - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB5_PRF.html)
-- Capítulo 6: ANOVA.
-  - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB6_EST.html)
-  - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB6_PRF.html)
+<!-- - Capítulo 1.2: Herramientas estadísticas básicas. Parte 2 -->
+<!--   - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB1_2_EST.html) -->
+<!--   - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB1_2_PRF.html) -->
+<!-- - Capítulo 2: Introducción normal multivariada y visualización. -->
+<!--   - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB2_EST.html) -->
+<!--   - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB2_PRF.html) -->
+<!-- - Capítulo 3: Análisis de componentes principales. -->
+<!--   - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB3.html) -->
+<!-- - Capítulo 4: Clustering. -->
+<!--   - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB4_EST.html) -->
+<!--   - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB4_PRF.html) -->
+<!-- - Capítulo 5: Regresión lineal en múltiples variables. -->
+<!--   - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB5_EST.html) -->
+<!--   - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB5_PRF.html) -->
+<!-- - Capítulo 6: ANOVA. -->
+<!--   - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB6_EST.html) -->
+<!--   - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB6_PRF.html) -->
