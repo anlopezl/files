@@ -21,7 +21,7 @@ Este curso presenta modelos estadísticos avanzados para el análisis de datos, 
 **Clases**
 
 - Capítulo 1: [Herramientas estadísticas avanzadas](https://anlopezl.github.io/files/AAD/SL_1.pdf)
-<!-- - Capítulo 2: [Evaluación de modelos y bootstrap](https://anlopezl.github.io/files/AAD/SL_2.pdf) -->
+- Capítulo 2: [Evaluación de modelos y bootstrap](https://anlopezl.github.io/files/AAD/SL_2.pdf)
 <!-- - Capítulo 3: [Métodos de suavización. Splines](https://anlopezl.github.io/files/AAD/SL_3.pdf) -->
 <!-- - Capítulo 4: [Métodos de Kernel](https://anlopezl.github.io/files/AAD/SL_4.pdf) -->
 <!-- - Capítulo 5: [Modelos generalizados. Regresión logística](https://anlopezl.github.io/files/AAD/SL_5.pdf) -->
