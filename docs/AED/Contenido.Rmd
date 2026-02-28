@@ -25,7 +25,7 @@ El estudio de fenómenos reales requiere considerar múltiples variables y sus p
   - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB1_1_EST.html)
   - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB1_1_PRF.html)
 - Capítulo 1.2: Herramientas estadísticas básicas. Parte 2
-  - [Diapositivas de clase](https://anlopezl.github.io/files/AED/SL_1_1.pdf)
+  - [Diapositivas de clase](https://anlopezl.github.io/files/AED/SL_1_2.pdf)
   - [Cuaderno estudiante](https://anlopezl.github.io/files/AED/NB1_2_EST.html)
   - [Cuaderno profesor](https://anlopezl.github.io/files/AED/NB1_2_PRF.html)
 
