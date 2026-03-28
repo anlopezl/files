@@ -1,0 +1,773 @@
+---
+title: "Análisis Estadístico de Datos"
+subtitle: "Sesión 4: Análisis de Componentes Principales (ACP)"
+author: "Profesor: Nicolás López"
+date: "`r Sys.Date()`"
+output:
+  beamer_presentation:
+    theme: metropolis
+    colortheme: default
+    fonttheme: professionalfonts
+fontsize: 10pt
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+  - \usepackage[utf8]{inputenc}
+  - \usepackage[T1]{fontenc}
+  - \usepackage{booktabs}
+  - \metroset{progressbar=frametitle}
+---
+
+```{r setup, include=FALSE}
+knitr::knit_hooks$set(size = function(before, options, envir) {
+  if (before) paste0('\n\n\\', options$size, '\n\n')
+  else '\n\n\\normalsize\n\n'
+})
+knitr::opts_chunk$set(
+  echo       = TRUE,
+  warning    = FALSE,
+  message    = FALSE,
+  fig.align  = "center",
+  out.width  = "88%",
+  fig.height = 2.8,
+  fig.width  = 4.8,
+  size       = "scriptsize"
+)
+profesor = TRUE
+library(tidyverse)
+library(ggrepel)
+library(corrplot)
+library(factoextra)
+```
+
+# Puente desde la Sesión 3
+
+## Resumen Sesión 3
+
+En la Sesión 3 establecimos los fundamentos de la distribución normal multivariada:
+
+\begin{itemize}
+  \item $\vec{X} \sim \mathcal{N}_p(\vec{\mu}, \Sigma)$: campana generalizada a $p$ dimensiones
+  \item $\vec{\mu}$: vector de medias --- ubica el centroide en $\mathbb{R}^p$
+  \item $\boldsymbol{\Sigma}$: matriz de covarianza --- codifica variabilidad y correlaciones
+  \item Distancia de Mahalanobis $d_M^2 \sim \chi^2_p$: detección de outliers
+  \item Q-Q plot multivariado: evaluación de normalidad conjunta
+\end{itemize}
+
+\begin{alertblock}{Pregunta central de la Sesion 4}
+¿Cómo \textbf{explotar} la estructura de $\boldsymbol{\Sigma}$ para resumir,
+visualizar y entender datos de alta dimensión cuando $p$ es grande?
+\end{alertblock}
+
+## Tabla de contenidos
+
+\tableofcontents
+
+# 1. Motivación: el problema de la alta dimensión
+
+## La metáfora del cilindro
+
+\begin{center}
+\textit{La ``gran verdad'' de los datos vive en $\mathbb{R}^p$.\\
+El ACP busca las proyecciones más informativas de esa gran verdad.}
+\end{center}
+
+
+Imagine un cilindro en 3D. Según desde dónde se mire produce proyecciones distintas: círculo, rectángulo, óvalo. Cada una es **verdad parcial**: correcta pero incompleta.
+
+---
+
+**La idea del ACP:**
+
+\begin{itemize}
+  \item Los datos viven en $p$ dimensiones (una por variable)
+  \item Buscamos proyecciones de baja dimensión que capturen la \textbf{mayor variabilidad posible}
+  \item Estas proyecciones son las \textbf{componentes principales} (CP)
+  \item Con pocas CP resumimos y visualizamos la estructura multivariada
+\end{itemize}
+
+## ¿Por qué no mirar todas las parejas?
+
+Con $p$ variables hay $\binom{p}{2}$ diagramas de dispersión posibles:
+
+\begin{center}
+{\small
+\begin{tabular}{ccc}
+\toprule
+\textbf{Variables ($p$)} & \textbf{Diagramas posibles} & \textbf{Factible?} \\
+\midrule
+2   & 1    & Facil \\
+5   & 10   & Tedioso \\
+10  & 45   & Dificil \\
+20  & 190  & Inviable \\
+100 & 4950 & Imposible \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+El ACP reemplaza esos miles de graficas por \textbf{1 o 2} que capturan la mayor parte de la informacion.
+
+\begin{exampleblock}{Contexto}
+En genomica, $p$ puede ser el numero de genes activos en una celula:
+decenas de miles. El ACP es el primer paso estandar en casi todo analisis genomico moderno.
+\end{exampleblock}
+
+## El ejemplo de esta sesión: datos de automóviles
+
+Los datos `mtcars` (Motor Trend, 1974): 32 modelos, 9 variables cuantitativas.
+
+\begin{center}
+{\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Variable} & \textbf{Descripcion} \\
+\midrule
+\texttt{mpg}  & Consumo (millas por galon) \\
+\texttt{cyl}  & Numero de cilindros \\
+\texttt{disp} & Desplazamiento del motor (pulg. cubicas) \\
+\texttt{hp}   & Potencia (caballos de fuerza) \\
+\texttt{drat} & Relacion del eje trasero \\
+\texttt{wt}   & Peso (miles de libras) \\
+\texttt{qsec} & Tiempo en 1/4 de milla \\
+\texttt{gear} & Numero de marchas \\
+\texttt{carb} & Numero de carburadores \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+Las variables tienen \textbf{unidades y escalas muy distintas} --- problema que resolveremos.
+
+# 2. El problema de la dimensionalidad
+
+## Visualizando en 1 y 2 dimensiones
+
+```{r fig-1d, fig.height=1.8, fig.width=5.0}
+mtcars$car = rownames(mtcars)
+ggplot(mtcars, aes(x=mpg, y=rep(0,nrow(mtcars)), label=car)) +
+  geom_point(size=1.5) +
+  geom_text_repel(size=1.6, box.padding=1.0, max.overlaps=Inf) +
+  xlab("Millas por galon") + ylab("") +
+  theme_minimal() +
+  theme(axis.text.y=element_blank(), axis.ticks.y=element_blank())
+```
+
+Con 1 variable: Fiat 128 y Toyota Corolla son similares entre si y
+diferentes a Lincoln Continental y Cadillac Fleetwood.
+
+## Dos variables: el diagrama de dispersión
+
+```{r fig-2d, fig.height=2.3, fig.width=4.8}
+ggplot(mtcars, aes(x=mpg, y=wt, label=car)) +
+  geom_point(size=1.2) +
+  geom_text_repel(size=1.6, box.padding=0.3, max.overlaps=Inf) +
+  xlab("Millas por galon") + ylab("Peso") + theme_minimal()
+```
+
+Con 2 variables confirmamos: los livianos de alto rendimiento se oponen a los pesados de bajo rendimiento. ¿Qué pasa con las 7 variables restantes?
+
+## Exploración univariada de las 9 variables
+
+```{r prep-data}
+# vs y am son binarias sin estructura ordinal: se excluyen
+mtcars2 = mtcars %>% select(-c(vs, am, car))
+```
+
+```{r fig-boxplots, fig.height=2.3, fig.width=5.0, echo=FALSE}
+mtcars2 %>%
+  pivot_longer(everything(), names_to="Var", values_to="Val") %>%
+  ggplot(aes(y=Val)) +
+  geom_boxplot(fill="steelblue", alpha=0.35, color="steelblue",
+               outlier.size=0.5) +
+  facet_wrap(~Var, scales="free", nrow=2) +
+  theme_minimal(base_size=7) +
+  labs(title="Distribucion univariada de cada variable")
+```
+
+## La estructura de correlación entre las 9 variables
+
+```{r fig-corrplot, fig.height=2, fig.width=3.5, echo=FALSE}
+corrplot.mixed(cor(mtcars2), order="AOE",tl.cex=0.6, number.cex=0.5)
+```
+
+---
+
+Muchas variables están muy correlacionadas: `disp`, `hp`, `wt`, `cyl`
+comparten información. Esto sugiere que **pocos ejes** pueden resumir bien los datos.
+
+# 3. La descomposición espectral
+
+## ¿Qué es la descomposición espectral?
+
+Cualquier matriz de covarianza $\Sigma$ (simétrica, semidefinida positiva) puede
+escribirse como:
+
+$$\Sigma = P \Lambda P^{\top}$$
+
+donde:
+
+* $\Lambda = \text{diag}(\lambda_1, \lambda_2, \ldots, \lambda_p)$,
+  con $\lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_p \geq 0$:
+  los \textbf{valores propios} (autovalores)
+* $P = [\mathbf{p}_1 \mid \mathbf{p}_2 \mid \cdots \mid \mathbf{p}_p]$:
+  los \textbf{vectores propios} (autovectores), ortonormales ($PP^\top = I$)
+
+**Significado intuitivo:** $\Sigma$ rota, estira y gira el espacio. La descomposición separa esas dos acciones:
+$P$ da las **direcciones** (rotación) y $\Lambda$ da los **tamaños** de estiramiento.
+
+## Ejemplo de computo: descomposicion espectral 2x2
+
+Considere la siguiente matriz de covarianza para dos variables:
+
+$$\Sigma = \begin{bmatrix} 3 & 1 \\ 1 & 2 \end{bmatrix}$$
+
+---
+
+```{r espectral-computo}
+Sigma = matrix(c(3, 1, 1, 2), nrow=2)
+descomp = eigen(Sigma)           # funcion base de R
+
+lambda = descomp$values          # valores propios
+P      = descomp$vectors         # vectores propios (columnas)
+
+cat("Valores propios:\n"); round(lambda, 3)
+cat("\nVectores propios (columnas de P):\n"); round(P, 3)
+```
+
+## Verificando: $\Sigma = P \Lambda P^\top$
+
+```{r espectral-verif}
+Lambda = diag(lambda)            # matriz diagonal de val. propios
+
+# Reconstruccion: debe ser igual a Sigma original
+Sigma_reconstruida = P %*% Lambda %*% t(P)
+round(Sigma_reconstruida, 6)
+
+# Verificando ortogonalidad de P: P * P^T = I
+round(P %*% t(P), 6)
+```
+
+La reconstruccion es exacta. $P P^\top = I$ confirma que los vectores propios son ortonormales.
+
+## ¿Qué nos dice la descomposición de este ejemplo?
+
+```{r espectral-geom, fig.height=2.4, fig.width=4.4, echo=FALSE}
+set.seed(42)
+datos_sim = as.data.frame(MASS::mvrnorm(300, mu=c(0,0), Sigma=Sigma))
+colnames(datos_sim) = c("X1","X2")
+ggplot(datos_sim, aes(x=X1, y=X2)) +
+  geom_point(alpha=0.25, size=0.7, color="steelblue") +
+  geom_density_2d(color="grey60", linewidth=0.4) +
+  geom_segment(aes(x=0, y=0,
+    xend=sqrt(lambda[1])*P[1,1], yend=sqrt(lambda[1])*P[2,1]),
+    arrow=arrow(length=unit(0.2,"cm")), color="tomato", linewidth=1.2) +
+  geom_segment(aes(x=0, y=0,
+    xend=sqrt(lambda[2])*P[1,2], yend=sqrt(lambda[2])*P[2,2]),
+    arrow=arrow(length=unit(0.2,"cm")), color="gold3", linewidth=1.2) +
+  coord_fixed() + theme_minimal(base_size=9) +
+  labs(title="Vectores propios de Sigma",
+       subtitle="Rojo = CP1 (mayor varianza), Dorado = CP2")
+```
+
+Los vectores propios apuntan en las **direcciones de mayor variabilidad** de la nube de puntos. Sus longitudes (proporcionales a $\sqrt{\lambda}$, escala del gráfico) indican cuánta varianza captura cada eje.
+
+## La conexión con el ACP
+
+\begin{block}{Conexion fundamental}
+\textbf{Los componentes principales son exactamente los vectores propios de $\Sigma$},
+ordenados de mayor a menor valor propio.
+\end{block}
+
+\begin{center}
+{\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Elemento} & \textbf{En la descomp. espectral} & \textbf{En el ACP} \\
+\midrule
+$\mathbf{p}_k$ & Vector propio $k$ de $\Sigma$ & Cargas del CP $k$ \\
+$\lambda_k$    & Valor propio $k$ de $\Sigma$  & Varianza del CP $k$ \\
+$z_{ik}$       & ---                           & Puntaje del individuo $i$ en CP $k$ \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+Ejecutar `prcomp()` en R es esencialmente aplicar `eigen()` a la matriz de
+covarianza (o correlacion si se estandarizan los datos), de forma numericamente
+estable via descomposicion en valores singulares (SVD).
+
+# 4. Intuición geométrica del ACP
+
+## Centrar los datos: el primer paso
+
+El ACP siempre trabaja con datos **centrados** (media = 0):
+
+```{r fig-centrado, fig.height=2.2, fig.width=5.0}
+mtcars_c = mtcars %>%
+  mutate(mpg_c = mpg - mean(mpg), wt_c = wt - mean(wt))
+ggplot(mtcars_c, aes(x=mpg_c, y=wt_c, label=car)) +
+  geom_point(size=1.2) +
+  geom_text_repel(size=1.5, box.padding=0.25, max.overlaps=Inf) +
+  geom_hline(yintercept=0, linetype="dashed", color="grey50") +
+  geom_vline(xintercept=0, linetype="dashed", color="grey50") +
+  xlab("mpg centrado") + ylab("wt centrado") + theme_minimal()
+```
+
+## Rotar hasta encontrar el eje de mayor varianza
+
+**CP1 = la línea a través del origen que maximiza la varianza proyectada:**
+
+```{r fig-rotacion, fig.height=2, fig.width=4.8}
+gg_c = ggplot(mtcars_c, aes(x=mpg_c, y=wt_c)) +
+  geom_point(size=0.9, color="steelblue") + theme_minimal() +
+  xlab("mpg centrado") + ylab("wt centrado")
+for(s in c(-1,-0.5,-0.1,0.1,0.5,1)){
+  col_ = if(s  == -0.1) "tomato" else "grey70"
+  lw_  = if(s  == -0.1) 1.1 else 0.4
+  gg_c = gg_c + geom_abline(intercept=0, slope=s,
+                            color=col_, linewidth=lw_, linetype="dashed")
+}
+gg_c + labs(title="Candidatos para CP1. La linea roja es la mejor")
+```
+
+## La geometría del CP1: proyecciones
+
+\begin{center}
+\textit{CP1 minimiza la distancia de cada punto a su proyeccion sobre la linea\\
+(equivalente a maximizar la varianza de las proyecciones)}
+\end{center}
+
+```{r fig-proyecciones, fig.height=2.3, fig.width=4.8, echo=FALSE}
+# Vector CP1 (normalizado) aprox pendiente -0.1 -> direction (-0.995, 0.0995)
+u1 = c(1, -0.1); u1 = u1/sqrt(sum(u1^2))
+dat_c = mtcars_c %>% select(mpg_c, wt_c)
+projs = as.matrix(dat_c) %*% u1
+proj_pts = data.frame(
+  x0 = dat_c$mpg_c, y0 = dat_c$wt_c,
+  x1 = projs * u1[1], y1 = projs * u1[2]
+)
+ggplot() +
+  geom_segment(data=proj_pts,
+               aes(x=x0, y=y0, xend=x1, yend=y1),
+               color="grey70", linewidth=0.3) +
+  geom_point(data=proj_pts, aes(x=x0, y=y0),
+             color="steelblue", size=0.9) +
+  geom_point(data=proj_pts, aes(x=x1, y=y1),
+             color="tomato", size=1.1) +
+  geom_abline(intercept=0, slope=-0.1,
+              color="tomato", linewidth=0.8) +
+  theme_minimal(base_size=9) +
+  labs(title="Proyecciones sobre CP1 (puntos rojos sobre la linea)",
+       subtitle="Los segmentos grises son los residuos minimizados",
+       x="mpg centrado", y="wt centrado")
+```
+
+## El valor propio como suma de distancias proyectadas
+
+\begin{block}{Interpretacion del valor propio $\lambda_k$}
+$\lambda_k$ es \textbf{proporcional a la suma de distancias cuadradas}
+desde las proyecciones de cada observacion sobre CP$_k$ hasta el centroide
+(el origen, tras centrar los datos):
+$$\lambda_k \propto \sum_{i=1}^n z_{ik}^2 = \sum_{i=1}^n \left(\mathbf{p}_k^\top (\mathbf{x}_i - \bar{\mathbf{x}})\right)^2$$
+\end{block}
+
+**Intuitivamente:** entre más dispersas estén las proyecciones alrededor del centroide, mayor es $\lambda_k$, y más información captura el CP $k$.
+
+CP1 tiene el $\lambda_1$ más grande --- es la dirección donde las proyecciones quedan **más alejadas del centroide**, es decir, donde los datos están más ``esparcidos''.
+
+## Verificando la interpretación del valor propio
+
+```{r lambda-verificacion}
+# Puntajes en CP1 y CP2 (datos estandarizados)
+pc_c   = prcomp(mtcars2, scale=TRUE)
+scores = pc_c$x
+
+# Suma de cuadrados de puntajes / (n-1) = varianza = valor propio
+varpc1 = sum(scores[,"PC1"]^2) / (nrow(scores) - 1)
+varpc2 = sum(scores[,"PC2"]^2) / (nrow(scores) - 1)
+
+# Valores propios del ACP
+lambdas = pc_c$sdev^2
+
+cat("Var. puntajes CP1:", round(varpc1, 4),
+    "  lambda_1:", round(lambdas[1], 4), "\n")
+cat("Var. puntajes CP2:", round(varpc2, 4),
+    "  lambda_2:", round(lambdas[2], 4), "\n")
+```
+
+La varianza de los puntajes en cada CP **es exactamente** el valor propio correspondiente.
+
+## Los CPs son ortogonales: ¿qué significa?
+
+Los ejes de los componentes principales son **perpendiculares entre sí**:
+
+\begin{itemize}
+  \item \textbf{Geometricamente}: CP2 es perpendicular a CP1, CP3 a ambos, etc. Forman un nuevo sistema de coordenadas rotado respecto al original
+  \item \textbf{Estadisticamente}: los puntajes en distintos CPs tienen correlacion cero --- cada CP captura informacion \textbf{no redundante}
+  \item \textbf{Consecuencia}: la varianza total de los datos se ``reparte'' entre los CPs sin solapamiento: $\lambda_1 + \lambda_2 + \cdots + \lambda_p = \text{traza}(\Sigma)$
+\end{itemize}
+
+```{r ortogonalidad}
+# Correlacion entre puntajes en distintos CPs: debe ser ~0
+round(cor(pc_c$x)[1:3, 1:3], 6)
+```
+
+# 5. El ACP en R
+
+## Escalamiento: por qué es crítico
+
+```{r escala-comp}
+pc_b = prcomp(mtcars2)             # SIN estandarizar
+pc_c = prcomp(mtcars2, scale=TRUE) # CON estandarizar (recomendado)
+
+# % varianza explicada por los 2 primeros CPs
+sin_esc = summary(pc_b)$importance[2, 1:2]
+con_esc = summary(pc_c)$importance[2, 1:2]
+rbind(sin_escala=round(sin_esc,3), con_escala=round(con_esc,3))
+```
+
+Sin estandarizar, `disp` (valores en cientos de pulgadas cubicas) domina completamente. Con estandarizar, cada variable aporta en igualdad de condiciones.
+
+\begin{alertblock}{Regla practica}
+\textbf{Siempre estandarizar} con \texttt{scale=TRUE} cuando las variables
+tienen unidades o escalas distintas.
+\end{alertblock}
+
+## Cargas e individuos
+
+```{r pca-resultados}
+pc_f = prcomp(mtcars2, scale=TRUE, rank.=2)
+round(pc_f$rotation, 3) # Cargas: contribucion de cada variable a cada CP
+```
+
+---
+
+```{r pca-puntajes}
+round(pc_f$x, 2)# Puntajes: coordenadas de cada auto en el nuevo espacio
+```
+
+## Interpretación de las cargas
+
+\begin{center}
+{\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Elemento} & \textbf{Nombre} & \textbf{Descripcion} \\
+\midrule
+$\mathbf{u}_j$     & Cargas (\textit{loadings}) & Pesos de cada variable en el CP $j$ \\
+$z_{ij}$           & Puntaje (\textit{score})   & Coordenada del individuo $i$ en el CP $j$ \\
+$\lambda_j$        & Valor propio               & Varianza (dispersion) a lo largo del CP $j$ \\
+$\sqrt{\lambda_j}$ & Valor singular             & Desv. estandar a lo largo del CP $j$ \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+\begin{itemize}
+  \item \textbf{CP1}: cargas altas en \texttt{disp}, \texttt{hp}, \texttt{wt}, \texttt{cyl} (positivas) y \texttt{mpg} (negativa). Es un \textbf{indice de tamano y consumo}: autos grandes y poco eficientes tienen CP1 alto
+  \item \textbf{CP2}: carga alta en \texttt{qsec} (positiva) y \texttt{hp} (negativa). Es un \textbf{indice de rendimiento en pista}
+\end{itemize}
+
+# 6. Varianza explicada y selección de CPs
+
+## Proporción de varianza explicada
+
+```{r var-expl}
+round(summary(pc_c)$importance, 3)
+```
+
+Con solo **2 componentes** explicamos el 86\% de la variabilidad total
+de las 9 variables originales.
+
+## El screeplot
+
+```{r fig-screeplot, fig.height=5, fig.width=7}
+screeplot(pc_c, col="tomato", pch=16,
+          type="lines", cex=1.5, lwd=2,
+          main="Screeplot - mtcars")
+```
+
+## Leer el screeplot: tres reglas prácticas
+
+\begin{itemize}
+  \item \textbf{Regla del codo}: elegir $k$ donde la curva dobla abruptamente. Despues del codo, cada CP adicional aporta poca varianza nueva
+  \item \textbf{Regla del 80\%}: seleccionar los CPs que acumulen $\geq 80\%$ de la varianza
+  \item \textbf{Regla de Kaiser}: retener los CPs con $\lambda_k > 1$ en datos estandarizados (el CP explica mas que una sola variable original)
+\end{itemize}
+
+\begin{exampleblock}{Para mtcars}
+El codo esta en $k=2$, que explica el 86\% de la variabilidad.
+Con 2 componentes resumimos 9 variables con minima perdida de informacion.
+\end{exampleblock}
+
+# 7. Visualización con `factoextra`
+
+## Gráfico de variables: el círculo de correlaciones
+
+```{r fig-fviz-var, fig.height=5, fig.width=7}
+fviz_pca_var(pc_c,col.var="contrib",gradient.cols=c("steelblue","gold","tomato"),repel=T)
+```
+
+## Cómo leer el círculo de correlaciones
+
+\begin{itemize}
+  \item \textbf{Longitud de la flecha}: carga total de la variable en los 2 CPs graficados. Mas larga = mas informativa en este plano
+  \item \textbf{Angulo entre dos flechas}: correlacion entre las variables correspondientes. Angulo pequeno = alta correlacion positiva; $180^\circ$ = correlacion negativa alta; $90^\circ$ = sin correlacion lineal
+  \item \textbf{Posicion en el eje}: indica en que sentido del CP aumenta esa variable
+\end{itemize}
+
+`disp`, `hp`, `wt` apuntan juntas (correlacionadas). `mpg` apunta en sentido opuesto (correlacion negativa con las anteriores). `qsec` apunta hacia el eje vertical (CP2), casi independiente de las otras.
+
+## Gráfico de individuos: el primer plano factorial
+
+```{r fig-fviz-ind-2, fig.height=6, fig.width=9}
+fviz_pca_ind(pc_c,col.ind=mtcars$mpg,gradient.cols=c("tomato","gold","steelblue"),
+             repel=TRUE, label="all")
+```
+
+## Leyendo el primer plano factorial
+
+\begin{itemize}
+  \item \textbf{Autos a la izquierda (azul)}: alto rendimiento, ligeros, pocos cilindros (Fiat 128, Toyota Corolla, Honda Civic)
+  \item \textbf{Autos a la derecha (rojo)}: bajo rendimiento, pesados, muy potentes (Lincoln Continental, Cadillac Fleetwood)
+  \item \textbf{Eje vertical (CP2)}: separa los autos rapidos en pista (Maserati Bora, Ferrari Dino, arriba) de los lentos
+\end{itemize}
+
+\begin{alertblock}{Regla de lectura del plano factorial}
+Dos autos \textbf{cercanos} en el plano son similares en las 9 variables
+originales. Dos autos \textbf{lejanos} son muy distintos.
+La distancia en el plano es una aproximacion a su distancia real en $\mathbb{R}^9$.
+\end{alertblock}
+
+## El biplot: variables e individuos juntos
+
+```{r fig-fviz-ind, fig.height=6, fig.width=9}
+fviz_pca_biplot(pc_c, repel=TRUE,col.var="tomato", col.ind="steelblue",label="all")
+```
+
+El biplot superpone el circulo de correlaciones y el plano factorial: permite ver simultaneamente que variables caracterizan a que individuos.
+
+# 8. Outliers y el ACP
+
+## El ACP es sensible a outliers
+
+El ACP maximiza varianza. Un outlier aumenta artificialmente la varianza
+en su dirección, pudiendo sesgar los ejes principales:
+
+```{r mahal-check}
+d2 = mahalanobis(mtcars2,
+                 center=colMeans(mtcars2),
+                 cov=cov(mtcars2))
+outliers_idx = which(d2 > qchisq(0.975, df=ncol(mtcars2)))
+paste0("Outliers detectados: ", length(outliers_idx),
+       " -> ", paste(rownames(mtcars2)[outliers_idx], collapse=", "))
+```
+
+\begin{alertblock}{Conexion con la Sesion 3}
+Antes de ejecutar el ACP, use la \textbf{distancia de Mahalanobis}
+para detectar y evaluar outliers multivariados.
+Un punto con $d_M^2 > \chi^2_p(0.975)$ merece revision antes de incluirlo.
+\end{alertblock}
+
+# 9. Funciones en R
+
+## `prcomp()` vs `princomp()`
+
+\begin{center}
+{\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Salida} & \textbf{prcomp()} & \textbf{princomp()} \\
+\midrule
+Desv. estandar de CPs  & \texttt{\$sdev}     & \texttt{\$sdev} \\
+Cargas (vectores prop.)& \texttt{\$rotation} & \texttt{\$loadings} \\
+Media de las variables & \texttt{\$center}   & \texttt{\$center} \\
+Escalamiento aplicado  & \texttt{\$scale}    & \texttt{\$scale} \\
+Puntajes (scores)      & \texttt{\$x}        & \texttt{\$scores} \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+\begin{exampleblock}{Recomendacion}
+Prefiera \texttt{prcomp()} por mayor precision numerica (usa SVD en lugar
+de la descomposicion espectral directa de la matriz de covarianza muestral).
+\end{exampleblock}
+
+## Flujo completo de un ACP
+
+\begin{enumerate}
+  \item \textbf{Explorar} variables: tipos, unidades, outliers, correlaciones
+  \item \textbf{Excluir} variables no cuantitativas continuas
+  \item \textbf{Detectar outliers} con distancia de Mahalanobis
+  \item \textbf{Ejecutar} \texttt{prcomp(datos, scale=TRUE)}
+  \item \textbf{Seleccionar} numero de CPs con screeplot y \% varianza acumulada
+  \item \textbf{Interpretar} cargas (\texttt{\$rotation}) de los CPs seleccionados
+  \item \textbf{Visualizar} con \texttt{factoextra}: circulo de correlaciones y plano factorial
+  \item \textbf{Comunicar} que captura cada CP en terminos del dominio del problema
+\end{enumerate}
+
+# 10. El ACP en el mundo moderno
+
+## Aplicaciones de alto impacto
+
+\begin{itemize}
+  \item \textbf{Genomica}: la reduccion de expresion genica ($p > 20.000$ genes) a 2--3 CPs para visualizar tipos celulares es el primer paso estandar en RNA-seq y datos de celula unica (\textit{single-cell})
+  \item \textbf{Reconocimiento facial (eigenfaces)}: Turk \& Pentland (1991) representaron imagenes de caras como combinaciones lineales de ``caras propias'' --- los vectores propios de la matriz de covarianza de pixeles. Cada cara nueva es proyectada sobre estos CPs para su identificacion
+  \item \textbf{Calidad del aire}: el CP1 de un conjunto de contaminantes medidos en varias estaciones resume el \textbf{nivel general de contaminacion}, mientras que CP2 puede distinguir contaminacion industrial de no industrial --- exactamente lo que veremos en la Sesion 5
+\end{itemize}
+
+## Más aplicaciones: finanzas y señales
+
+\begin{itemize}
+  \item \textbf{Finanzas cuantitativas}: el modelo de factores de Fama-French reduce cientos de retornos de activos a unos pocos factores de riesgo via ACP. Los gestores de portafolio usan los primeros CPs para identificar exposicion a riesgo de mercado, tamano y valor
+  \item \textbf{Neurociencia y EEG}: las senales de electrodos en el cerebro son altamente correlacionadas. El ACP separa componentes independientes de actividad neuronal de ruido electrico ambiental
+  \item \textbf{Clima y meteorologia}: el ACP de temperatura y precipitacion en cientos de estaciones meteorologicas produce patrones espaciales llamados \textit{teleconexiones} (como El Nino) que resumen la variabilidad climatica global
+\end{itemize}
+
+## ACP como puerta de entrada al machine learning
+
+\begin{itemize}
+  \item \textbf{Preprocesamiento}: reducir dimensionalidad antes de entrenar modelos de ML previene la ``maldicion de la dimensionalidad''
+  \item \textbf{Regularizacion}: la regresion sobre los primeros CPs (PCR, \textit{Principal Component Regression}) estabiliza coeficientes cuando hay muchas variables correlacionadas
+  \item \textbf{Deteccion de anomalias}: reconstruir datos desde pocos CPs y medir el error de reconstruccion detecta outliers. Usado en fraude bancario y mantenimiento predictivo industrial
+\end{itemize}
+
+\begin{block}{Generalizaciones modernas del ACP}
+El ACP lineal es el caso mas simple de una familia de metodos:\\
+\textbf{t-SNE} y \textbf{UMAP} (no lineales, para visualizacion)\\
+\textbf{Autoencoders} (redes neuronales que generalizan el ACP)\\
+\textbf{Kernel PCA} (ACP en espacios de alta dimension via kernel trick)
+\end{block}
+
+## Limitaciones del ACP
+
+\begin{itemize}
+  \item \textbf{Solo relaciones lineales}: si las variables tienen relaciones curvilineas, los CPs pueden ser poco informativos
+  \item \textbf{Interpretabilidad no automatica}: las cargas requieren analisis cuidadoso para asignarles significado en el dominio del problema
+  \item \textbf{Sensible a outliers}: un outlier multivariado puede sesgar los ejes --- usar Mahalanobis previamente
+  \item \textbf{Dependiente del escalamiento}: cambiar la escala de una variable puede cambiar completamente los resultados
+  \item \textbf{No es un metodo de agrupamiento}: revela estructura pero no asigna grupos formalmente
+\end{itemize}
+
+# 11. Síntesis y puente
+
+## Conclusiones de la Sesión 4
+
+\begin{itemize}
+  \item $\boldsymbol{\Sigma} = P\Lambda P^\top$: el ACP es la descomposicion espectral de $\Sigma$
+  \item Los vectores propios de $\Sigma$ son las \textbf{direcciones de los CPs}; los valores propios son su \textbf{varianza} (suma de distancias proyectadas al cuadrado desde el centroide)
+  \item Los CPs son combinaciones lineales de las variables, ortogonales entre si
+  \item \textbf{Siempre estandarizar} cuando las escalas son distintas
+  \item El screeplot y el \% de varianza acumulada guian la seleccion del numero de CPs
+  \item Las cargas interpretan cada CP; los puntajes ubican individuos en el nuevo espacio
+\end{itemize}
+
+## Conexión entre sesiones
+
+\begin{center}
+{\small
+\begin{tabular}{cccc}
+\toprule
+\textbf{Sesiones 1-2} & \textbf{Sesion 3} & \textbf{Sesion 4} & \textbf{Sesion 5} \\
+\midrule
+Distribuciones      & Normal           & ACP               & Clustering \\
+univariada y        & multivariada     & Reduccion de      & K-means y \\
+bivariada           & $\mathcal{N}_p$  & dimensionalidad   & jerarquico \\
+\addlinespace
+Covarianza          & Matriz $\Sigma$  & Vec. propios      & Distancia y \\
+y correlacion $r$   & Mahalanobis      & de $\Sigma$       & centroides \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+# Puente hacia la Sesión 5: Clustering
+
+## El ACP revela estructura, el clustering la formaliza
+
+```{r fig-grupos-preview, fig.height=6, fig.width=9, echo=FALSE}
+fviz_pca_ind(pc_c, repel=TRUE, label="all",
+             col.ind="steelblue", alpha.ind=0.7) +
+  labs(title="Primer plano factorial: cuantos grupos naturales hay?",
+       subtitle="Sesion 5: K-means y clustering jerarquico responderan esta pregunta")
+```
+
+## ¿Qué es el clustering?
+
+\begin{block}{Definicion}
+Los metodos de agrupamiento buscan particiones de las $n$ observaciones en grupos
+(\textit{clusters}) homogeneos internamente y heterogeneos entre si, sin usar
+etiquetas previas (\textbf{aprendizaje no supervisado}).
+\end{block}
+
+**Dos metodos principales (Sesion 5):**
+
+\begin{itemize}
+  \item \textbf{K-medias (K-means)}: particion en $K$ grupos minimizando distancias internas. Simple, rapido. Requiere definir $K$ a priori.
+  \item \textbf{Agrupamiento jerarquico}: construye grupos progresivamente. No requiere $K$ a priori; produce un \textbf{dendograma}.
+\end{itemize}
+
+## La Sesión 5 en contexto
+
+La Sesion 5 usara el dataset de calidad del aire de Bogota (RMCAB):
+15 estaciones de monitoreo, 5 contaminantes a las 8 am.
+
+\begin{center}
+{\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Variable} & \textbf{Descripcion} \\
+\midrule
+CO ($ppm$)            & Monoxido de carbono \\
+NO ($ppb$)            & Oxido nitrico \\
+NO2 ($ppb$)           & Dioxido de nitrogeno \\
+OZONO ($ppb$)         & Ozono \\
+PM2.5 ($\mu g/m^3$)   & Material particulado fino \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+\begin{exampleblock}{Pregunta de la Sesion 5}
+¿Que estaciones de Bogota tienen perfiles de contaminacion similares?
+¿Podemos recuperar agrupaciones espaciales (por localidad) usando solo datos de sensores?
+\end{exampleblock}
+
+## Preguntas para la Sesión 5
+
+\begin{enumerate}
+  \item ¿Como medir formalmente que dos observaciones son ``similares'' en $\mathbb{R}^p$?
+  \item ¿Como encontrar grupos automaticamente sin asignarlos a mano?
+  \item ¿Como elegir el numero optimo de grupos $K$?
+  \item ¿En que se diferencia K-means del agrupamiento jerarquico?
+  \item ¿Como visualizar grupos obtenidos usando el primer plano factorial del ACP?
+\end{enumerate}
+
+# Bibliografía
+
+## Bibliografía
+
+\begin{enumerate}
+  \item Hanif, M. et al. (2019). \textit{Multivariate Techniques}. Cambridge Scholars Publishing.
+  \item Zelterman, D. (2015). \textit{Applied Multivariate Statistics with R}. Springer.
+  \item Schumacker, R. E. (2016). \textit{Using R with Multivariate Statistics}. SAGE.
+  \item Everitt, B., \& Hothorn, T. (2011). \textit{Applied Multivariate Analysis with R}. Springer.
+  \item Boehmke, B. \& Greenwell, B. (2020). \textit{Hands-On Machine Learning with R}. CRC Press.
+  \item Turk, M. \& Pentland, A. (1991). Eigenfaces for recognition. \textit{J. Cognitive Neuroscience}, 3(1).
+\end{enumerate}
+
+# Anexo
+
+## `princomp()` como alternativa
+
+```{r princomp-anexo}
+# princomp() usa descomposicion espectral directa de la cov. muestral
+# prcomp() usa SVD -- mas numericamente estable (preferida)
+pc_a = princomp(mtcars2)
+summary(pc_a)
+```
+
+`princomp()` y `prcomp()` producen los mismos CPs pero con distintas
+notaciones en sus salidas (ver tabla en la Seccion 9).
