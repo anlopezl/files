@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title> Nicolás López · Statistical Data Scientist</title>
+    <!-- Tailwind + Fonts + Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .lang-es { display: none; }
+        .tab-content { animation: fade 0.25s ease; }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Dark mode */
+        .dark { background-color: #0f172a; color: #e2e8f0; }
+        .dark .bg-white { background-color: #1e293b; }
+        .dark .border-gray-100 { border-color: #334155; }
+        .dark .text-gray-500 { color: #94a3b8; }
+        .dark .text-gray-600 { color: #cbd5e1; }
+        .dark .text-gray-700 { color: #e2e8f0; }
+        .dark .text-gray-800 { color: #f1f5f9; }
+        .dark .text-gray-900 { color: #f8fafc; }
+        .dark .bg-gray-50 { background-color: #0f172a; }
+        .dark .bg-gray-100 { background-color: #1e293b; }
+        .dark .bg-blue-50 { background-color: #1e3a8a; }
+        .dark .text-blue-600 { color: #60a5fa; }
+        .dark .border-blue-600 { border-color: #3b82f6; }
+        .dark .hover\:text-blue-600:hover { color: #60a5fa; }
+        .dark .shadow-sm { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.3); }
+        
+        /* Language toggle */
+        .lang-toggle button {
+            transition: all 0.15s;
+        }
+        .lang-toggle button.active {
+            background-color: #e2e8f0;
+            color: #0f172a;
+        }
+        .dark .lang-toggle button.active {
+            background-color: #334155;
+            color: #f8fafc;
+        }
+        
+        /* Tabs */
+        .tab-btn {
+            border-bottom: 2px solid transparent;
+            transition: all 0.15s;
+        }
+        .tab-btn.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        .dark .tab-btn.active {
+            color: #60a5fa;
+            border-bottom-color: #60a5fa;
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 640px) {
+            .tab-btn {
+                padding-left: 1rem;
+                padding-right: 1rem;
+                font-size: 0.75rem;
+            }
+            h1 {
+                font-size: 2.5rem !important;
+            }
+            .text-xl {
+                font-size: 1.1rem !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased bg-[#fafafa] dark:bg-[#0f172a] transition-colors duration-200">
+
+    <!-- Header with avatar and dark mode toggle -->
+    <header class="bg-white dark:bg-[#1e293b] border-b border-gray-100 dark:border-[#334155] py-8 md:py-12 px-4 md:px-6 transition-colors">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+            <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-5 w-full">
+                <!-- Avatar (statistics placeholder, easy to replace) -->
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=150&h=150&fit=crop&auto=format" 
+                     alt="Nicolás López" 
+                     class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-white dark:border-[#334155] shadow-sm">
+                <div class="w-full">
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">Nicolás López</h1>
+                    <p class="text-lg sm:text-xl text-gray-500 dark:text-gray-400 font-medium lang-es">Senior Data Scientist · Profesor Universitario</p>
+                    <p class="text-lg sm:text-xl text-gray-500 dark:text-gray-400 font-medium lang-en">Senior Data Scientist · University Professor</p>
+                    
+                    <div class="flex flex-wrap gap-x-4 sm:gap-x-6 gap-y-2 mt-4 text-gray-500 dark:text-gray-400">
+                        <a href="mailto:andresnlopezl@gmail.com" class="hover:text-blue-600 dark:hover:text-blue-400 transition text-sm flex items-center gap-1.5">
+                            <i class="fas fa-envelope text-xs"></i> andresnlopezl@gmail.com
+                        </a>
+                        <a href="https://www.linkedin.com/in/anlopezl/" target="_blank" class="hover:text-blue-600 dark:hover:text-blue-400 transition text-sm flex items-center gap-1.5">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                        <a href="https://github.com/anlopezl" target="_blank" class="hover:text-blue-600 dark:hover:text-blue-400 transition text-sm flex items-center gap-1.5">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Language & Dark Mode Controls -->
+            <div class="flex items-center gap-3 self-end md:self-auto mt-4 md:mt-0">
+                <div class="lang-toggle bg-gray-100 dark:bg-[#334155] p-1 rounded-full flex">
+                    <button id="lang-es-btn" class="lang-btn px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full" data-lang="es">ES</button>
+                    <button id="lang-en-btn" class="active lang-btn px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full" data-lang="en">EN</button>
+                </div>
+                <button id="darkModeToggle" class="p-2 rounded-full bg-gray-100 dark:bg-[#334155] text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition" aria-label="Toggle theme">
+                    <i class="fas fa-moon dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:inline"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tab navigation -->
+    <nav class="sticky top-0 z-30 bg-white/90 dark:bg-[#1e293b]/90 backdrop-blur-sm border-b border-gray-100 dark:border-[#334155]">
+        <div class="max-w-4xl mx-auto px-2 sm:px-6 flex overflow-x-auto gap-1 hide-scrollbar">
+            <button onclick="switchTab('perfil', this)" class="tab-btn active px-3 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400 lang-es">Perfil</button>
+            <button onclick="switchTab('perfil', this)" class="tab-btn active px-3 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400 lang-en">Profile</button>
+            
+            <button onclick="switchTab('exp', this)" class="tab-btn px-3 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400 lang-es">Experiencia</button>
+            <button onclick="switchTab('exp', this)" class="tab-btn px-3 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400 lang-en">Experience</button>
+            
+            <button onclick="switchTab('docencia', this)" class="tab-btn px-3 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400 lang-es">Docencia & Investigación</button>
+            <button onclick="switchTab('docencia', this)" class="tab-btn px-3 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400 lang-en">Teaching & Research</button>
+            
+            <button onclick="switchTab('edu', this)" class="tab-btn px-3 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400 lang-es">Formación & Proyectos</button>
+            <button onclick="switchTab('edu', this)" class="tab-btn px-3 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400 lang-en">Education & Projects</button>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        
+        <!-- ===== PROFILE TAB ===== -->
+        <div id="tab-perfil" class="tab-content">
+            <!-- Professional profile (full width) -->
+            <div class="mb-8 sm:mb-10">
+                <h2 class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-5 lang-es">Perfil profesional</h2>
+                <h2 class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-5 lang-en">Professional profile</h2>
+                <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-gray-100 dark:border-[#334155] shadow-sm">
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm sm:text-base lang-es">
+                        Soy Magíster en Estadística de la Universidad Nacional de Colombia, con una sólida formación en métodos estadísticos rigurosos y su aplicación interdisciplinaria. Mi trayectoria abarca la industria (finanzas, BPO, educación superior), la investigación internacional y la docencia universitaria de pre y posgrado. Me apasiona el estudio profundo de los fundamentos estadísticos y el modelamiento de datos complejos, tanto estructurados como no estructurados. Diseño e implemento soluciones basadas en Modelos de Lenguaje de Gran Escala (LLMs) e inteligencia artificial generativa, construyendo pipelines reproducibles de NLP y liderando el ciclo completo de análisis de datos. Disfruto comunicar hallazgos a audiencias técnicas y no técnicas, y transformar datos en estrategias decisivas.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm sm:text-base lang-en">
+                        I hold a Master's degree in Statistics from the National University of Colombia, with a strong foundation in rigorous statistical methods and their interdisciplinary application. My career spans industry (finance, BPO, higher education), international research, and university teaching at both undergraduate and graduate levels. I am deeply passionate about the rigorous study of statistical fundamentals and the modeling of complex data, whether structured or unstructured. I design and implement enterprise solutions powered by Large Language Models (LLMs) and generative AI, building reproducible NLP pipelines and leading end-to-end data analysis processes. I enjoy communicating insights to both technical and non-technical audiences, transforming data into actionable strategies.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Technical Skills & Languages (two balanced columns) -->
+            <div class="grid md:grid-cols-2 gap-6 sm:gap-8">
+                <!-- Technical Skills -->
+                <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-gray-100 dark:border-[#334155] shadow-sm">
+                    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-5 flex items-center gap-2">
+                        <i class="fas fa-code text-blue-500 text-sm"></i> 
+                        <span class="lang-es">Habilidades técnicas</span>
+                        <span class="lang-en">Technical skills</span>
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 lang-es">Estadística & Machine Learning</p>
+                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 lang-en">Statistics & Machine Learning</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">R (advanced)</span>
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">Python (advanced)</span>
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">SAS</span>
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">SQL</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">NLP & LLMs</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">Hugging Face Transformers</span>
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">OpenAI API (GPT-4o)</span>
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">Prompt Engineering</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">MLOps & Development</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">DVC</span>
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">Git</span>
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">Linux Shell</span>
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">Reproducible Pipelines</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 lang-es">Visualización & Otros</p>
+                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 lang-en">Visualization & Other</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">Power BI</span>
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">Shiny (R)</span>
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">Dash (Python)</span>
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">QGis</span>
+                                <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#0f172a] text-gray-700 dark:text-gray-300 rounded-lg text-sm border border-gray-100 dark:border-[#334155]">Basic HTML</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Languages & Certifications -->
+                <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-gray-100 dark:border-[#334155] shadow-sm">
+                    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-5 flex items-center gap-2">
+                        <i class="fas fa-globe text-blue-500 text-sm"></i> 
+                        <span class="lang-es">Idiomas</span>
+                        <span class="lang-en">Languages</span>
+                    </h3>
+                    <ul class="space-y-4 text-gray-600 dark:text-gray-300">
+                        <li class="flex justify-between items-center">
+                            <span class="font-medium">Spanish</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Native</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="font-medium">English</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">B2/C1 (TOEFL itp 2019)</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="font-medium">French</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Basic-intermediate (160h)</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="my-5 sm:my-6 border-t border-gray-100 dark:border-[#334155]"></div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-certificate text-blue-500 mt-0.5"></i>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-white text-sm lang-es">Científico de Datos Certificado</p>
+                                <p class="font-medium text-gray-800 dark:text-white text-sm lang-en">Certified Data Scientist</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">MinTIC & Correlation One (375h, 2019)</p>
+                                <a href="https://www.credential.net/3f8e579d-02ce-4817-b612-52413cc07ff9" target="_blank" class="text-xs text-blue-600 dark:text-blue-400 hover:underline lang-es">Ver credencial →</a>
+                                <a href="https://www.credential.net/3f8e579d-02ce-4817-b612-52413cc07ff9" target="_blank" class="text-xs text-blue-600 dark:text-blue-400 hover:underline lang-en">View credential →</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-trophy text-blue-500 mt-0.5"></i>
+                            <div>
+                                <p class="font-medium text-gray-800 dark:text-white text-sm lang-es">Semifinalista Galardón Profesor Inspirador</p>
+                                <p class="font-medium text-gray-800 dark:text-white text-sm lang-en">Inspiring Professor Award Semifinalist</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Universidad del Rosario, 2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== EXPERIENCE TAB ===== -->
+        <div id="tab-exp" class="tab-content hidden">
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-6 lang-es">Experiencia profesional</h2>
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-6 lang-en">Professional experience</h2>
+            <div class="space-y-4 sm:space-y-5">
+                <!-- Blackboard -->
+                <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                    <div class="flex flex-wrap justify-between items-start gap-3 mb-2">
+                        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">Senior Data Scientist</h3>
+                        <span class="text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full lang-es">2022 – Presente</span>
+                        <span class="text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full lang-en">2022 – Present</span>
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-3">Blackboard (EdTech)</p>
+                    <div class="text-gray-600 dark:text-gray-300 space-y-2 text-sm sm:text-base">
+                        <p class="lang-es">· Diseño e implementación de soluciones empresariales basadas en LLMs (OpenAI, AzureOpenAI) e IA generativa, incluyendo integración con Hugging Face Transformers.</p>
+                        <p class="lang-en">· I design and implement enterprise solutions powered by LLMs (OpenAI, AzureOpenAI) and generative AI, including integration with Hugging Face Transformers.</p>
+                        <p class="lang-es">· Construcción de pipelines reproducibles de NLP (DVC, Git) para clasificación temática y análisis de sentimiento sobre respuestas abiertas de encuestas.</p>
+                        <p class="lang-en">· I build reproducible NLP pipelines (DVC, Git) for topic classification and sentiment analysis on open-ended survey responses.</p>
+                        <p class="lang-es">· Liderazgo técnico del proceso de análisis de datos end-to-end, desde la recolección hasta la generación automática de reportes ejecutivos.</p>
+                        <p class="lang-en">· I provide technical leadership for end-to-end data analysis, from data collection to automated executive reporting.</p>
+                        <p class="lang-es">· Modelamiento textual no supervisado para vectorización de cursos y análisis predictivo de éxito estudiantil.</p>
+                        <p class="lang-en">· I develop unsupervised text models for course vectorization and predictive analytics for student success.</p>
+                    </div>
+                </div>
+                <!-- Teleperformance -->
+                <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                    <div class="flex flex-wrap justify-between items-start gap-3 mb-2">
+                        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">Data Scientist</h3>
+                        <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-[#0f172a] px-3 py-1 rounded-full">2019 – 2022</span>
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-3">Teleperformance Colombia</p>
+                    <div class="text-gray-600 dark:text-gray-300 space-y-2 text-sm sm:text-base">
+                        <p class="lang-es">· Lideré un equipo de analistas y científicos de datos en el procesamiento y modelamiento supervisado de datos textuales no estructurados.</p>
+                        <p class="lang-en">· I led a team of analysts and data scientists in processing and supervised modeling of unstructured textual data.</p>
+                        <p class="lang-es">· Presenté resultados y metodologías a directivos C-level, desarrollando visualizaciones efectivas para la toma de decisiones.</p>
+                        <p class="lang-en">· I presented results and methodologies to C-level executives, developing effective visualizations for decision-making.</p>
+                        <p class="lang-es">· Desarrollé programas de entrenamiento interno en analítica avanzada y lideré la evaluación técnica de nuevos candidatos.</p>
+                        <p class="lang-en">· I developed internal advanced analytics training programs and led technical candidate assessments.</p>
+                    </div>
+                </div>
+                <!-- Management Solutions -->
+                <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                    <div class="flex flex-wrap justify-between items-start gap-3 mb-2">
+                        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white lang-es">Consultor Estadístico</h3>
+                        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white lang-en">Statistical Consultant</h3>
+                        <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-[#0f172a] px-3 py-1 rounded-full">2016 – 2018</span>
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-3">Management Solutions</p>
+                    <div class="text-gray-600 dark:text-gray-300 space-y-2 text-sm sm:text-base">
+                        <p class="lang-es">· Implanté y adapté modelos internos de provisiones bajo NIIF 9 (IFRS9) para una importante entidad bancaria colombiana, utilizando modelos de supervivencia y regresión regularizada.</p>
+                        <p class="lang-en">· I implemented and adapted internal provision models under IFRS 9 for a major Colombian bank, using survival models and regularized regression.</p>
+                        <p class="lang-es">· Brindé soporte metodológico en la estimación rigurosa de parámetros de riesgo crediticio y consulta masiva de bases de datos.</p>
+                        <p class="lang-en">· I provided methodological support in rigorous estimation of credit risk parameters and large-scale database querying.</p>
+                    </div>
+                </div>
+                <!-- Nielsen -->
+                <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                    <div class="flex flex-wrap justify-between items-start gap-3 mb-2">
+                        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white lang-es">Estadístico Jr. – Stat Ops</h3>
+                        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white lang-en">Junior Statistician – Stat Ops</h3>
+                        <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-[#0f172a] px-3 py-1 rounded-full lang-es">2016 (6 meses)</span>
+                        <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-[#0f172a] px-3 py-1 rounded-full lang-en">2016 (6 months)</span>
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mb-3">Nielsen</p>
+                    <div class="text-gray-600 dark:text-gray-300 space-y-2 text-sm sm:text-base">
+                        <p class="lang-es">· Modelé el volumen de ventas para ajustar cambios en la metodología de medición.</p>
+                        <p class="lang-en">· I modeled sales volume to adjust changes in measurement methodology.</p>
+                        <p class="lang-es">· Mantuve la muestra estadística y transferí conocimiento a sucursales.</p>
+                        <p class="lang-en">· I maintained the statistical sample and transferred knowledge to branch offices.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TEACHING & RESEARCH TAB ===== -->
+        <div id="tab-docencia" class="tab-content hidden">
+            <div class="grid md:grid-cols-2 gap-6 sm:gap-10">
+                <!-- Teaching -->
+                <div>
+                    <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-5 lang-es">Docencia</h2>
+                    <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-5 lang-en">Teaching</h2>
+                    <div class="space-y-4 sm:space-y-5">
+                        <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                            <h4 class="font-semibold text-gray-800 dark:text-white lang-es">Profesor Cátedra</h4>
+                            <h4 class="font-semibold text-gray-800 dark:text-white lang-en">Adjunct Professor</h4>
+                            <p class="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-2">Universidad del Rosario (2022 – present)</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 lang-es">Cursos de pre y posgrado: Probabilidad y Estadística 1, Análisis de Datos y Análisis Avanzados de Datos. <span class="font-medium">Semifinalista Galardón Profesor Inspirador 2024.</span></p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 lang-en">Undergraduate and graduate courses: Probability and Statistics 1, Data Analysis, and Advanced Data Analysis. <span class="font-medium">Semifinalist for the 2024 Inspiring Professor Award.</span></p>
+                        </div>
+                        <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                            <h4 class="font-semibold text-gray-800 dark:text-white lang-es">Profesor Cátedra</h4>
+                            <h4 class="font-semibold text-gray-800 dark:text-white lang-en">Adjunct Professor</h4>
+                            <p class="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-2">Universidad Nacional de Colombia (2022–2023)</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 lang-es">Introducción a la estadística para ingeniería.</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 lang-en">Introductory statistics for engineering.</p>
+                        </div>
+                        <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                            <h4 class="font-semibold text-gray-800 dark:text-white lang-es">Becario Docente</h4>
+                            <h4 class="font-semibold text-gray-800 dark:text-white lang-en">Teaching Fellow</h4>
+                            <p class="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-2">Universidad Nacional de Colombia (2018)</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 lang-es">Bioestadística Fundamental y Probabilidad, Estadística Fundamental y Social.</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 lang-en">Fundamental Biostatistics, and Probability, Fundamental and Social Statistics.</p>
+                        </div>
+                        <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                            <h4 class="font-semibold text-gray-800 dark:text-white lang-es">Estudiante Auxiliar</h4>
+                            <h4 class="font-semibold text-gray-800 dark:text-white lang-en">Teaching Assistant</h4>
+                            <p class="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-2">Fac. de Odontología, UNAL (2013–2014)</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 lang-es">Apoyo en probabilidad e inferencia para Maestría en Odontología.</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 lang-en">Support in probability and inference for the Master's in Dentistry program.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Research -->
+                <div>
+                    <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-5 lang-es">Investigación</h2>
+                    <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-5 lang-en">Research</h2>
+                    <div class="space-y-4 sm:space-y-5">
+                        <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                            <h4 class="font-semibold text-gray-800 dark:text-white">Graduate Visiting Scholar</h4>
+                            <p class="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-2">University of Delaware, USA (2021)</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 lang-es mb-2">Modelamiento del error para predicción sinergística humano-máquina.</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 lang-en mb-2">Error modeling for human-machine synergistic prediction.</p>
+                            <a href="https://www.eecis.udel.edu/~ajbrock/members/" target="_blank" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Lab →</a>
+                        </div>
+                        <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                            <h4 class="font-semibold text-gray-800 dark:text-white">Undergraduate Visiting Scholar</h4>
+                            <p class="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-2">Purdue University, USA (2015)</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 lang-es mb-2">Análisis de CCLE con modelamiento supervisado para predecir respuesta a compuestos anticáncer.</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 lang-en mb-2">CCLE analysis using supervised modeling to predict anticancer drug response.</p>
+                            <a href="http://www.stat.purdue.edu/~chunh/" target="_blank" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Lab →</a>
+                        </div>
+                        <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                            <h4 class="font-semibold text-gray-800 dark:text-white lang-es">Asistente de Investigación</h4>
+                            <h4 class="font-semibold text-gray-800 dark:text-white lang-en">Research Assistant</h4>
+                            <p class="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-2">UNAL (2014–2015)</p>
+                            <ul class="text-sm text-gray-600 dark:text-gray-300 space-y-2">
+                                <li class="lang-es">· Actualización base de mortalidad latinoamericana <a href="https://lamortalidad.github.io/" target="_blank" class="text-blue-600 dark:text-blue-400 ml-1 text-xs">↗</a></li>
+                                <li class="lang-en">· Latin American mortality database update <a href="https://lamortalidad.github.io/" target="_blank" class="text-blue-600 dark:text-blue-400 ml-1 text-xs">↗</a></li>
+                                <li class="lang-es">· Caracterización demográfica de migrantes rurales <a href="https://colaboracion.dnp.gov.co/CDT/Agriculturapecuarioforestal%20y%20pesca/Migraci%C3%B3n%20Rural.pdf" target="_blank" class="text-blue-600 dark:text-blue-400 ml-1 text-xs">↗</a></li>
+                                <li class="lang-en">· Demographic characterization of rural migrants <a href="https://colaboracion.dnp.gov.co/CDT/Agriculturapecuarioforestal%20y%20pesca/Migraci%C3%B3n%20Rural.pdf" target="_blank" class="text-blue-600 dark:text-blue-400 ml-1 text-xs">↗</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Publications & outreach -->
+            <div class="mt-8 sm:mt-10">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 lang-es">Publicaciones y difusión</h3>
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 lang-en">Publications & outreach</h3>
+                <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                    <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-file-alt text-blue-500 mt-1"></i>
+                            <span><span class="font-medium lang-es">Artículo (2025):</span><span class="font-medium lang-en">Article (2025):</span> Ordóñez-Blanco, J.C. et al. <span class="lang-es">Diversidad de orquídeas en el DMI Cuchilla de Peñas Blancas.</span><span class="lang-en">Orchid diversity in the DMI Cuchilla de Peñas Blancas.</span> <a href="https://revistas.udistrital.edu.co/index.php/colfor/article/view/22574" target="_blank" class="text-blue-600 dark:text-blue-400 ml-1 text-xs">Colombia Forestal →</a></span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-newspaper text-blue-500 mt-1"></i>
+                            <span class="lang-es"><span class="font-medium">Cobertura:</span> Adaptan curva de crecimiento longitudinal para niños de Bogotá. <a href="https://agenciadenoticias.unal.edu.co/detalle/adaptan-curva-de-crecimiento-longitudinal-para-los-ninos-de-bogota" target="_blank" class="text-blue-600 dark:text-blue-400 ml-1 text-xs">Agencia UN →</a></span>
+                            <span class="lang-en"><span class="font-medium">Coverage:</span> Longitudinal growth curve adapted for Bogotá children. <a href="https://agenciadenoticias.unal.edu.co/detalle/adaptan-curva-de-crecimiento-longitudinal-para-los-ninos-de-bogota" target="_blank" class="text-blue-600 dark:text-blue-400 ml-1 text-xs">UN News Agency →</a></span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fab fa-youtube text-red-500 mt-1"></i>
+                            <span class="lang-es"><span class="font-medium">Cobertura:</span> Colombian students learning at Purdue. <a href="https://www.youtube.com/watch?v=TQtl5aNgajc" target="_blank" class="text-blue-600 dark:text-blue-400 ml-1 text-xs">West Lafayette News →</a></span>
+                            <span class="lang-en"><span class="font-medium">Coverage:</span> Colombian students learning at Purdue. <a href="https://www.youtube.com/watch?v=TQtl5aNgajc" target="_blank" class="text-blue-600 dark:text-blue-400 ml-1 text-xs">West Lafayette News →</a></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== EDUCATION & PROJECTS TAB ===== -->
+        <div id="tab-edu" class="tab-content hidden">
+            <!-- Education -->
+            <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-5 lang-es">Formación académica</h2>
+            <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-5 lang-en">Education</h2>
+            <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
+                <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                    <h3 class="font-semibold text-base sm:text-lg text-gray-800 dark:text-white lang-es">Maestría en Estadística</h3>
+                    <h3 class="font-semibold text-base sm:text-lg text-gray-800 dark:text-white lang-en">Master's in Statistics</h3>
+                    <p class="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-1">Universidad Nacional de Colombia (2017–2020)</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 lang-es">Calificación 4.5/5.0 · Beca Asistente Docente</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 lang-en">GPA 4.5/5.0 · Teaching Assistant Scholarship</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 lang-es">Tesis: Curvas estándar de crecimiento infantil mediante métodos funcionales.</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 lang-en">Thesis: Standard infant growth curves using functional data analysis methods.</p>
+                    <a href="https://repositorio.unal.edu.co/handle/unal/78817" target="_blank" class="inline-block text-sm text-blue-600 dark:text-blue-400 hover:underline lang-es">Ver tesis →</a>
+                    <a href="https://repositorio.unal.edu.co/handle/unal/78817" target="_blank" class="inline-block text-sm text-blue-600 dark:text-blue-400 hover:underline lang-en">View thesis →</a>
+                </div>
+                <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                    <h3 class="font-semibold text-base sm:text-lg text-gray-800 dark:text-white lang-es">Profesional en Estadística</h3>
+                    <h3 class="font-semibold text-base sm:text-lg text-gray-800 dark:text-white lang-en">Bachelor's in Statistics</h3>
+                    <p class="text-blue-600 dark:text-blue-400 text-xs sm:text-sm mb-1">Universidad Nacional de Colombia (2011–2016)</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 lang-es">Calificación 4.4/5.0 · Lista de Decano (2012-2016)</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 lang-en">GPA 4.4/5.0 · Dean's List (2012-2016)</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 lang-es">Tesis: Predictive modeling of anticancer drug sensitivity with CCLE.</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 lang-en">Thesis: Predictive modeling of anticancer drug sensitivity with the CCLE.</p>
+                    <a href="https://anlopezl.github.io/files/CV/research_report_CCLE.pdf" target="_blank" class="inline-block text-sm text-blue-600 dark:text-blue-400 hover:underline lang-es">Ver tesis →</a>
+                    <a href="https://anlopezl.github.io/files/CV/research_report_CCLE.pdf" target="_blank" class="inline-block text-sm text-blue-600 dark:text-blue-400 hover:underline lang-en">View thesis →</a>
+                </div>
+            </div>
+
+            <!-- Certificates & Teaching Material -->
+            <div class="grid md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
+                <div>
+                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 lang-es">Certificados y reconocimientos</h3>
+                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 lang-en">Certificates & awards</h3>
+                    <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm space-y-4">
+                        <div>
+                            <p class="font-medium lang-es">Científico de Datos Certificado</p>
+                            <p class="font-medium lang-en">Certified Data Scientist</p>
+                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">MinTIC & Correlation One · 375h (2019)</p>
+                            <a href="https://www.credential.net/3f8e579d-02ce-4817-b612-52413cc07ff9" target="_blank" class="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline lang-es">Ver credencial →</a>
+                            <a href="https://www.credential.net/3f8e579d-02ce-4817-b612-52413cc07ff9" target="_blank" class="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline lang-en">View credential →</a>
+                        </div>
+                        <div>
+                            <p class="font-medium lang-es">Semifinalista Galardón Profesor Inspirador 2024</p>
+                            <p class="font-medium lang-en">Inspiring Professor Award Semifinalist 2024</p>
+                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Universidad del Rosario</p>
+                        </div>
+                        <div>
+                            <p class="font-medium lang-es">Lista de Decano 2012–2016</p>
+                            <p class="font-medium lang-en">Dean's List 2012–2016</p>
+                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Universidad Nacional de Colombia</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 lang-es">Material de enseñanza</h3>
+                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 lang-en">Teaching material</h3>
+                    <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                        <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+                            <li><a href="https://anlopezl.github.io/files/PYE/Contenido.html" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline lang-es">Estadística introductoria (pregrado) →</a><a href="https://anlopezl.github.io/files/PYE/Contenido.html" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline lang-en">Introductory Statistics (undergraduate) →</a></li>
+                            <li><a href="https://anlopezl.github.io/files/AED/Contenido.html" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline lang-es">Multivariada básica (posgrado) →</a><a href="https://anlopezl.github.io/files/AED/Contenido.html" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline lang-en">Basic Multivariate Analysis (graduate) →</a></li>
+                            <li><a href="https://anlopezl.github.io/files/AAD/Contenido.html" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline lang-es">Multivariada avanzada (posgrado) →</a><a href="https://anlopezl.github.io/files/AAD/Contenido.html" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline lang-en">Advanced Multivariate Analysis (graduate) →</a></li>
+                            <li><a href="https://www.youtube.com/@SimpleEstadística" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline lang-es">Canal YouTube "Simple Estadística" →</a><a href="https://www.youtube.com/@SimpleEstadística" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline lang-en">YouTube Channel "Simple Estadística" →</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Projects -->
+            <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-5 lang-es">Proyectos destacados</h2>
+            <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-5 lang-en">Featured projects</h2>
+            <div class="grid md:grid-cols-2 gap-4 sm:gap-6">
+                <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm">
+                    <div class="flex items-start gap-3">
+                        <i class="fab fa-github text-xl text-gray-700 dark:text-gray-300"></i>
+                        <div>
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1">sLDA</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 lang-es">Implementación de Supervised Latent Dirichlet Allocation para modelamiento de tópicos con respuesta supervisada.</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 lang-en">Implementation of Supervised Latent Dirichlet Allocation for topic modeling with a supervised response.</p>
+                            <a href="https://github.com/anlopezl/sLDA" target="_blank" class="inline-flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                                <i class="fas fa-external-link-alt text-xs"></i> <span class="lang-es">Ver repositorio</span><span class="lang-en">View repository</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-[#1e293b] rounded-xl sm:rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-[#334155] shadow-sm opacity-75">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-code-branch text-xl text-gray-400"></i>
+                        <div>
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1 lang-es">Próximamente</h4>
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1 lang-en">Coming soon</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-500 lang-es">Más proyectos en preparación. Visita mi GitHub para ver contribuciones recientes.</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-500 lang-en">More projects in the pipeline. Check out my GitHub for recent contributions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-100 dark:border-[#334155] py-6 sm:py-8 text-center text-xs sm:text-sm text-gray-400 dark:text-gray-500">
+        <p>© 2026 Andrés Nicolás López López</p>
+    </footer>
+
+    <script>
+        // --- Tab handling ---
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-blue-600', 'dark:text-blue-400');
+                btn.classList.add('text-gray-500', 'dark:text-gray-400');
+            });
+            
+            const parent = btnElement.parentElement;
+            const btns = parent.querySelectorAll('.tab-btn');
+            const index = Array.from(btns).indexOf(btnElement);
+            const pairIndex = index % 2 === 0 ? index : index - 1;
+            
+            btns[pairIndex].classList.add('active', 'text-blue-600', 'dark:text-blue-400');
+            btns[pairIndex].classList.remove('text-gray-500', 'dark:text-gray-400');
+            if (btns[pairIndex+1]) {
+                btns[pairIndex+1].classList.add('active', 'text-blue-600', 'dark:text-blue-400');
+                btns[pairIndex+1].classList.remove('text-gray-500', 'dark:text-gray-400');
+            }
+        }
+
+        // --- Language toggle ---
+        const esBtn = document.getElementById('lang-es-btn');
+        const enBtn = document.getElementById('lang-en-btn');
+        const esElements = document.querySelectorAll('.lang-es');
+        const enElements = document.querySelectorAll('.lang-en');
+        
+        function setLanguage(lang) {
+            const isEs = lang === 'es';
+            esElements.forEach(el => el.style.display = isEs ? 'block' : 'none');
+            enElements.forEach(el => el.style.display = isEs ? 'none' : 'block');
+            
+            esBtn.classList.toggle('active', isEs);
+            enBtn.classList.toggle('active', !isEs);
+        }
+        
+        esBtn.addEventListener('click', () => setLanguage('es'));
+        enBtn.addEventListener('click', () => setLanguage('en'));
+        
+        // Set English as default
+        setLanguage('en');
+
+        // --- Dark mode ---
+        const darkToggle = document.getElementById('darkModeToggle');
+        const html = document.documentElement;
+        
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            html.classList.remove('light');
+        } else {
+            html.classList.add('light');
+            html.classList.remove('dark');
+        }
+        
+        darkToggle.addEventListener('click', () => {
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                localStorage.theme = 'light';
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        });
+    </script>
+    <style>
+        /* Hide scrollbar for cleaner mobile nav */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body>
+</html>

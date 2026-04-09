@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Nicolás López · Cursos de Estadística</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .lang-en { display: none; }
+        
+        .dark { background-color: #0f172a; color: #e2e8f0; }
+        .dark .bg-white { background-color: #1e293b; }
+        .dark .border-gray-100 { border-color: #334155; }
+        .dark .text-gray-500 { color: #94a3b8; }
+        .dark .text-gray-600 { color: #cbd5e1; }
+        .dark .text-gray-700 { color: #e2e8f0; }
+        .dark .text-gray-800 { color: #f1f5f9; }
+        .dark .text-gray-900 { color: #f8fafc; }
+        .dark .bg-gray-50 { background-color: #0f172a; }
+        .dark .bg-gray-100 { background-color: #1e293b; }
+        
+        .lang-toggle button.active {
+            background-color: #e2e8f0;
+            color: #0f172a;
+        }
+        .dark .lang-toggle button.active {
+            background-color: #334155;
+            color: #f8fafc;
+        }
+        
+        .course-card {
+            transition: all 0.2s ease;
+        }
+        .course-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+        .dark .course-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="antialiased bg-[#fafafa] dark:bg-[#0f172a] transition-colors duration-200">
+
+    <!-- Header con presentación personal -->
+    <header class="bg-white dark:bg-[#1e293b] border-b border-gray-100 dark:border-[#334155] py-12 md:py-16 px-4 md:px-6 transition-colors">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="flex justify-end mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="lang-toggle bg-gray-100 dark:bg-[#334155] p-1 rounded-full flex">
+                        <button id="lang-es-btn" class="active lang-btn px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full" data-lang="es">ES</button>
+                        <button id="lang-en-btn" class="lang-btn px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium rounded-full" data-lang="en">EN</button>
+                    </div>
+                    <button id="darkModeToggle" class="p-2 rounded-full bg-gray-100 dark:bg-[#334155] text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition" aria-label="Cambiar tema">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=150&h=150&fit=crop&auto=format" 
+                     alt="Nicolás López" 
+                     class="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-[#334155] shadow-md mx-auto mb-4">
+                <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">
+                    <span class="lang-es">¡Hola! Soy Nicolás López</span>
+                    <span class="lang-en">Hi! I'm Nicolás López</span>
+                </h1>
+                <p class="text-lg text-gray-500 dark:text-gray-400 font-medium mb-6">
+                    <span class="lang-es">Estadístico · Profesor · Entusiasta de los datos</span>
+                    <span class="lang-en">Statistician · Professor · Data enthusiast</span>
+                </p>
+            </div>
+            
+            <div class="max-w-2xl mx-auto text-gray-600 dark:text-gray-300 space-y-4 text-left sm:text-justify">
+                <p class="lang-es">
+                    <i class="fas fa-chart-bar text-blue-500 mr-2"></i>
+                    Me apasiona la estadística. Sí, así de simple. Desde que descubrí que los datos pueden contar historias y ayudar a tomar mejores decisiones, supe que esto era lo mío. Me encanta perderme en un modelo, entender qué hay detrás de los números, y sobre todo, compartir ese gusto con otros.
+                </p>
+                <p class="lang-en">
+                    <i class="fas fa-chart-bar text-blue-500 mr-2"></i>
+                    I'm passionate about statistics. Plain and simple. Ever since I discovered that data can tell stories and help make better decisions, I knew this was my thing. I love getting lost in a model, understanding what's behind the numbers, and above all, sharing that enthusiasm with others.
+                </p>
+                <p class="lang-es">
+                    <i class="fas fa-chalkboard-teacher text-blue-500 mr-2"></i>
+                    Dar clases es una de las cosas que más disfruto. No hay nada como ver a un estudiante conectar los puntos por primera vez. En mis cursos busco hacer la estadística accesible y visualmente interesante, sin perder la profundidad y el rigor que merece.
+                </p>
+                <p class="lang-en">
+                    <i class="fas fa-chalkboard-teacher text-blue-500 mr-2"></i>
+                    Teaching is one of the things I enjoy most. There's nothing like watching a student connect the dots for the first time. In my courses, I aim to make statistics accessible and visually engaging, without sacrificing the depth and rigor it deserves.
+                </p>
+                <p class="lang-es">
+                    <i class="fab fa-youtube text-red-500 mr-2"></i>
+                    También tengo un canal de YouTube, 
+                    <a href="https://www.youtube.com/@SimpleEstad%C3%ADstica" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Simple Estadística</a>, 
+                    donde sigo aprendiendo y compartiendo lo que sé. La idea es ofrecer explicaciones claras que complementen el aprendizaje formal.
+                </p>
+                <p class="lang-en">
+                    <i class="fab fa-youtube text-red-500 mr-2"></i>
+                    I also run a YouTube channel, 
+                    <a href="https://www.youtube.com/@SimpleEstad%C3%ADstica" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Simple Estadística</a>, 
+                    where I keep learning and sharing what I know. The idea is to provide clear and carefully crafted explanations that complement formal learning.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección de cursos -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                <span class="lang-es">Mis cursos universitarios</span>
+                <span class="lang-en">My university courses</span>
+            </h2>
+            <p class="text-gray-500 dark:text-gray-400">
+                <span class="lang-es">Material completo, diapositivas, laboratorios y cuadernos interactivos</span>
+                <span class="lang-en">Complete material, slides, labs, and interactive notebooks</span>
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5 sm:gap-6">
+            <!-- Curso 1: Análisis Avanzado de Datos -->
+            <a href="https://anlopezl.github.io/files/AAD/Contenido.html" target="_blank" 
+               class="course-card bg-white dark:bg-[#1e293b] rounded-2xl p-6 border border-gray-100 dark:border-[#334155] shadow-sm hover:border-blue-200 dark:hover:border-blue-800 transition-all group">
+                <div class="flex flex-col h-full">
+                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-4 mb-4 text-white">
+                        <i class="fas fa-chart-line text-3xl mb-2"></i>
+                        <h3 class="text-xl font-bold lang-es">Análisis Avanzado de Datos</h3>
+                        <h3 class="text-xl font-bold lang-en">Advanced Data Analysis</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-grow lang-es">
+                        Modelos estadísticos avanzados: bootstrap, splines, métodos de kernel y modelos generalizados. Para estudiantes con bases sólidas que buscan profundizar.
+                    </p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-grow lang-en">
+                        Advanced statistical models: bootstrap, splines, kernel methods, and generalized models. For students with solid foundations seeking deeper understanding.
+                    </p>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
+                            <span class="lang-es">Ver curso</span>
+                            <span class="lang-en">View course</span>
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </span>
+                        <span class="text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-full">Posgrado</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Curso 2: Análisis Estadístico de Datos -->
+            <a href="https://anlopezl.github.io/files/AED/Contenido.html" target="_blank" 
+               class="course-card bg-white dark:bg-[#1e293b] rounded-2xl p-6 border border-gray-100 dark:border-[#334155] shadow-sm hover:border-blue-200 dark:hover:border-blue-800 transition-all group">
+                <div class="flex flex-col h-full">
+                    <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-4 mb-4 text-white">
+                        <i class="fas fa-cubes text-3xl mb-2"></i>
+                        <h3 class="text-xl font-bold lang-es">Análisis Estadístico de Datos</h3>
+                        <h3 class="text-xl font-bold lang-en">Statistical Data Analysis</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-grow lang-es">
+                        Herramientas para datos multidimensionales: normal multivariada, componentes principales, clustering y regresión múltiple.
+                    </p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-grow lang-en">
+                        Tools for multidimensional data: multivariate normal distribution, principal components, clustering, and multiple regression.
+                    </p>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                            <span class="lang-es">Ver curso</span>
+                            <span class="lang-en">View course</span>
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </span>
+                        <span class="text-xs bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 px-2 py-1 rounded-full">Posgrado</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Curso 3: Probabilidad y Estadística -->
+            <a href="https://anlopezl.github.io/files/PYE/Contenido.html" target="_blank" 
+               class="course-card bg-white dark:bg-[#1e293b] rounded-2xl p-6 border border-gray-100 dark:border-[#334155] shadow-sm hover:border-blue-200 dark:hover:border-blue-800 transition-all group">
+                <div class="flex flex-col h-full">
+                    <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-4 mb-4 text-white">
+                        <i class="fas fa-dice text-3xl mb-2"></i>
+                        <h3 class="text-xl font-bold lang-es">Probabilidad y Estadística</h3>
+                        <h3 class="text-xl font-bold lang-en">Probability and Statistics</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-grow lang-es">
+                        Curso introductorio. Fundamentos conceptuales y prácticos para la recolección, organización, análisis e interpretación de datos.
+                    </p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-grow lang-en">
+                        Introductory course. Conceptual and practical foundations for collecting, organizing, analyzing, and interpreting data.
+                    </p>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
+                            <span class="lang-es">Ver curso</span>
+                            <span class="lang-en">View course</span>
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </span>
+                        <span class="text-xs bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 px-2 py-1 rounded-full">Pregrado</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Enlace a YouTube destacado -->
+        <div class="mt-12 text-center">
+            <a href="https://www.youtube.com/@SimpleEstad%C3%ADstica" target="_blank" 
+               class="inline-flex items-center gap-3 bg-white dark:bg-[#1e293b] rounded-full px-6 py-3 border border-gray-200 dark:border-[#334155] shadow-sm hover:shadow-md hover:border-red-200 dark:hover:border-red-800 transition-all">
+                <i class="fab fa-youtube text-red-500 text-xl"></i>
+                <span class="text-gray-700 dark:text-gray-300 font-medium">
+                    <span class="lang-es">Visita mi canal de YouTube</span>
+                    <span class="lang-en">Visit my YouTube channel</span>
+                </span>
+                <i class="fas fa-external-link-alt text-xs text-gray-400"></i>
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-100 dark:border-[#334155] py-8 text-center text-sm text-gray-400 dark:text-gray-500">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="flex flex-wrap justify-center gap-6 mb-4">
+                <a href="mailto:andresnlopezl@gmail.com" class="hover:text-blue-600 dark:hover:text-blue-400 transition">
+                    <i class="fas fa-envelope mr-1"></i> andresnlopezl@gmail.com
+                </a>
+                <a href="https://www.linkedin.com/in/anlopezl/" target="_blank" class="hover:text-blue-600 dark:hover:text-blue-400 transition">
+                    <i class="fab fa-linkedin mr-1"></i> LinkedIn
+                </a>
+                <a href="https://github.com/anlopezl" target="_blank" class="hover:text-blue-600 dark:hover:text-blue-400 transition">
+                    <i class="fab fa-github mr-1"></i> GitHub
+                </a>
+            </div>
+            <p>© 2026 Andrés Nicolás López López</p>
+        </div>
+    </footer>
+
+    <script>
+        const esBtn = document.getElementById('lang-es-btn');
+        const enBtn = document.getElementById('lang-en-btn');
+        const esElements = document.querySelectorAll('.lang-es');
+        const enElements = document.querySelectorAll('.lang-en');
+        
+        function setLanguage(lang) {
+            const isEs = lang === 'es';
+            esElements.forEach(el => el.style.display = isEs ? 'block' : 'none');
+            enElements.forEach(el => el.style.display = isEs ? 'none' : 'block');
+            
+            document.querySelectorAll('.lang-es.flex, .lang-es.inline-flex').forEach(el => {
+                el.style.display = isEs ? 'flex' : 'none';
+            });
+            document.querySelectorAll('.lang-en.flex, .lang-en.inline-flex').forEach(el => {
+                el.style.display = isEs ? 'none' : 'flex';
+            });
+            
+            esBtn.classList.toggle('active', isEs);
+            enBtn.classList.toggle('active', !isEs);
+        }
+        
+        esBtn.addEventListener('click', () => setLanguage('es'));
+        enBtn.addEventListener('click', () => setLanguage('en'));
+        setLanguage('es');
+
+        const darkToggle = document.getElementById('darkModeToggle');
+        const html = document.documentElement;
+        
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            html.classList.remove('light');
+        } else {
+            html.classList.add('light');
+            html.classList.remove('dark');
+        }
+        
+        darkToggle.addEventListener('click', () => {
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                localStorage.theme = 'light';
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        });
+    </script>
+    <style>
+        .lang-es.flex, .lang-en.flex,
+        .lang-es.inline-flex, .lang-en.inline-flex {
+            display: none;
+        }
+    </style>
+</body>
+</html>
